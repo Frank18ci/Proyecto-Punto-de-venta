@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "Punto De Venta";
+}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    h2, h3 {
+        color: #333;
+    }
+
+    form {
+        margin-bottom: 10px;
+    }
+
+    table, th, td {
+        border: 1px solid #ccc;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+    }
+
+    .carrito-actions {
+        margin-top: 10px;
+    }
+</style>
+
+
+<h2>Punto De Venta</h2>
+<hr />
+<br />
+<form action='/PuntoDeVentas/GuardarCompra' method="post">
+    @Html.AntiForgeryToken()
+    <div>
+        <h3>Datos</h3>
+        <div class="d-flex">
+            @Html.Label("Cliente: ", null, new { @class = "label-form mt-2" })
+            @Html.DropDownList("IdCliente", ViewBag.listaClientes as SelectList, new { @class = "ms-1 form-control w-50" })
+            @Html.Label("Empleado: ", null, new { @class = "ms-3 label-form mt-2" })
+            @Html.DropDownList("IdEmpleado", ViewBag.listaEmpleados as SelectList, new { @class = "ms-1 form-control w-50" })
+        </div>
+    </div>
+    <br />
+    <hr>
+    <div>
+        <h3>Carrito</h3>
+        @if (ViewBag.Carrito.Count > 0)
+        {
+            <table class="table table-bordered table-responsive table-striped">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Importe</th>
+                </tr>
+                @foreach (var producto in ViewBag.Carrito)
+                {
+                    <tr>
+                        <td>@producto.Nombre</td>
+                        <td>@producto.Precio</td>
+                        <td>@producto.Cantidad</td>
+                        <td>@(producto.Precio * producto.Cantidad)</td>
+                    </tr>
+                }
+            </table>
+            <div class="carrito-actions d-flex align-items-center justify-content-between">
+                <div class="text-center">
+                    <strong>Total: @ViewBag.Total</strong>
+                </div>
+                <div class="d-flex">
+                    <input type="submit" value="Guardar Compra" class="btn btn-primary me-1" />
+                    <a href='@Url.Action("VaciarCarrito", "PuntoDeVentas")' class="btn btn-danger me-2">Vaciar Carrito</a>
+                </div>
+            </div>
+            <div>@ViewBag.mensaje</div>
+        }
+        else
+        {
+            <p>El carrito está vacío.</p>
+        }
+    </div>
+</form>
+<br />
+<hr />
+<div>
+
+    <h3>Buscar Productos</h3>
+    <form method="get" action="/PuntoDeVentas/PuntoDeVenta">
+        <div class="d-flex">
+            <input class="form-control w-25" type="text" name="searchTerm" value="@ViewBag.SearchTerm" placeholder="Buscar por nombre de producto" />
+            <input type="submit" value="Buscar" class="ms-1 btn btn-outline-success" />
+        </div>
+    </form>
+</div>
+
+@if (!string.IsNullOrEmpty(ViewBag.SearchTerm) && ViewBag.Productos != null && ViewBag.Productos.Count > 0)
+{
+    <div>
+        <h3>Resultados de la Búsqueda</h3>
+        <table class="table table-bordered table-responsive table-striped">
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+            </tr>
+            @foreach (var producto in ViewBag.Productos)
+            {
+                <tr>
+                    <td>@producto.Nombre</td>
+                    <td>@producto.Precio</td>
+                    <td class="w-25">
+                        <form action='@Url.Action("AgregarAlCarrito", "PuntoDeVentas")' method="post">
+                            <div class="d-flex align-items-center justify-content-between">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@producto.Id" />
+                                <input type="number" class="form-control w-50 me-2" name="cantidad" value="1" min="1" />
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+}
+else if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
+{
+    <p>No se encontraron productos para el término de búsqueda "@ViewBag.SearchTerm".</p>
+}

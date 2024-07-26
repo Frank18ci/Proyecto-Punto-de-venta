@@ -1,0 +1,85 @@
+﻿@using ProyectoCompuX.Models
+@{
+    ViewBag.Title = "RegistroVentas";
+}
+<style>
+    .encabezado {
+        font-weight: bold;
+    }
+</style>
+<h2>Registro de Ventas</h2>
+@using (Html.BeginForm())
+{
+    <div class="d-flex align-items-center">
+        <div class="me-2">
+            @Html.Label("Fecha Inicio: ", new { @class = "label-form" })
+        </div>
+        <div class="me-3">
+            @{
+                DateTime fechaInicioPredeterminada = ViewBag.fechaInicioPredeterminada != null ? (DateTime)ViewBag.fechaInicioPredeterminada : DateTime.Today.AddDays(-7);
+            }
+            @Html.TextBox("FechaInicio", fechaInicioPredeterminada.ToString("yyyy-MM-dd"), new { @class = "form-control w-100", @type = "date" })
+        </div>
+        <div class="me-2">
+            @Html.Label("Fecha Fin: ", new { @class = "label-form" })
+        </div>
+        <div class="me-3">
+            @{
+                DateTime fechaFinPredeterminada = DateTime.Today;
+            }
+            @Html.TextBox("FechaFin", fechaFinPredeterminada.ToString("yyyy-MM-dd"), new { @class = "form-control w-100", @type = "date" })
+        </div>
+        <div>
+            <input type="submit" class="btn btn-primary" value="Buscar" />
+        </div>
+    </div>
+}
+<hr />
+<table class="table table-bordered table-responsive">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Monto</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ if (ViewBag.registroVentas != null)
+            {
+                var id = -1;
+                var aumentador = 0;
+                foreach (var item in ViewBag.registroVentas)
+                {
+                    if (id != item.IdVenta)
+                    {
+                        id = item.IdVenta;
+
+                        <tr class="table-primary">
+                            <td class="encabezado" colspan="4">
+                                <span class="ms-5">Venta: @item.IdVenta</span>
+                                <span class="ms-5">Cliente: @item.Cliente</span>
+                                <span class="ms-5">Empleado: @item.Empleado</span>
+                                <span class="ms-5">Fecha: @item.FechaVenta.ToString("dd/MM/yyyy")</span>
+                                <span class="ms-5">Monto Total: @ViewBag.registroVentasMonto[aumentador]</span>
+                            </td>
+                        </tr>
+                        aumentador++;
+                    }
+                    <tr class="table-warning">
+                        <td>@item.Producto</td>
+                        <td>@item.Precio</td>
+                        <td>@item.Cantidad</td>
+                        <td>@item.Monto</td>
+                    </tr>
+
+                }
+            }
+            else
+            {
+                <tr><td colspan="4" class="text-center">No hay registros</td></tr>
+ }
+        }
+    </tbody>
+</table>
+

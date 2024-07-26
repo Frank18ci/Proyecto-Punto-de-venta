@@ -1,0 +1,99 @@
+﻿@model IEnumerable<ProyectoCompuX.Models.EmpleadoDetalle>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Lista Empleados</h2>
+
+<p>
+    @Html.ActionLink("Nuevo Empleado", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+@using (Html.BeginForm())
+{
+    <div class="d-flex align-items-center">
+        @Html.Label("Nombre:", new { @class = "label-form me-2" })
+        @Html.TextBox("Nombre", "", new { @class = "w-25 form-control form-control-sm me-2" })
+        <input type="submit" class="btn btn-secondary mt-1 mb-1" value="Buscar" />
+    </div>
+}
+<div>
+    <span class="text-danger fw-bold">@ViewBag.mensaje</span>
+</div>
+<div>
+    <span>Cantidad de Empleados: @Model.Count()</span>
+</div>
+<div class="table-responsive">
+    <table class="table w-100 table-striped table-bordered">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombres)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellidos)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DNI)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaIngreso)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Correo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TipoEmpleado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaModificacion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>Opciones</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombres)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellidos)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DNI)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaIngreso)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Correo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TipoEmpleado)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaModificacion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estado)
+                </td>
+                <td>
+                    <a href='@Url.Action("Edit", new { id = item.Id })' class="btn btn-warning">
+                        <i class='fas fa-pencil-alt'></i>
+                    </a>
+                    <a href='@Url.Action("Details", new { id = item.Id })' class="btn btn-success">
+                        <i class='fas fa-info-circle'></i>
+                    </a>
+                    <a href='@Url.Action("Delete", new { id = item.Id })' class="btn btn-danger">
+                        <i class='fas fa-trash-alt'></i>
+                    </a>
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
